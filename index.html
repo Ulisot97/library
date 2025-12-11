@@ -13,8 +13,10 @@
     <header>
       <h1>Library</h1>
     </header>
-    <div>
-      <h2>Books</h2>
+    <div class="div-container">
+      <div class="div-container__h2">
+        <h2 class="div-container">Books</h2>
+      </div>
       <table class="table">
         <tr class="table__tr">
           <th class="table__tr__th">Title</th>
@@ -23,10 +25,14 @@
           <th class="table__tr__th">Readed</th>
         </tr>
       </table>
+      <dialog id="myDialog">
+      </dialog>
+      <div class="newBookDiv">
+        <button onclick="addBookLibrary()">
+          <span>New Book</span>
+        </button>
+      </div>
     </div>
-    <button onclick="addBookLibrary()">
-      <span>New Book</span>
-    </button>
   </main>
   <script src="app.js"></script>
 </body>

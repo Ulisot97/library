@@ -1,4 +1,8 @@
 const myLibrary = [];
+const dialog = document.createElement("dialog");
+dialog.setAttribute("class", "dialog");
+const body = document.querySelector("body");
+const trData = document.querySelector("trData");
 
 function Book(title, author, pages, readed) {
   (this.id = crypto.getRandomValues),
@@ -8,95 +12,108 @@ function Book(title, author, pages, readed) {
     (this.readed = readed);
 }
 
-function addBookLibrary() {
-  let dialog = document.querySelector("#myDialog");
-  let table = document.querySelector(".table");
-  let form = document.createElement("form");
-  let label1 = document.createElement("label");
-  let input1 = document.createElement("input");
-  let label2 = document.createElement("label");
-  let input2 = document.createElement("input");
-  let label3 = document.createElement("label");
-  let input3 = document.createElement("input");
-  let label4 = document.createElement("label");
-  let select = document.createElement("select");
-  let option1 = document.createElement("option");
-  let option2 = document.createElement("option");
-  let divButton = document.createElement("div");
-  let addButton = document.createElement("button");
-  let spanButton = document.createElement("span");
-  spanButton.textContent = "Add";
-  spanButton.setAttribute("class", "spanButton");
-  dialog.setAttribute("class", "dialog");
-  form.setAttribute("class", "form");
-  label1.textContent = "title: ";
-  input1.setAttribute("type", "text");
-  label2.textContent = "autor: ";
-  input2.setAttribute("type", "text");
-  label3.textContent = "pages: ";
-  input3.setAttribute("type", "text");
-  label4.textContent = "readed: ";
-  option1.setAttribute("value", "option1");
-  option1.textContent = "Yes";
-  option2.setAttribute("value", "option2");
-  option2.textContent = "No";
-  select.appendChild(option1);
-  select.appendChild(option2);
-  form.appendChild(label1);
-  form.appendChild(input1);
-  form.appendChild(label2);
-  form.appendChild(input2);
-  form.appendChild(label3);
-  form.appendChild(input3);
-  form.appendChild(label4);
-  form.appendChild(select);
-  addButton.onclick = () => {
-    add(
-      input1.value,
-      input2.value,
-      input3.value,
-      select.options[select.selectedIndex].text
-    );
-    console.log(dialog);
-    dialog.close();
-  };
-  addButton.appendChild(spanButton);
-  divButton.appendChild(addButton);
-  dialog.appendChild(form);
-  dialog.appendChild(divButton);
+/*myLibrary.push(new Book("The Hobbit", "R.R.Tolkien", 234, "yes"));
+myLibrary.push(new Book("The Lord of the Ring", "R.R.Tolkien", 600, "yes"));
+myLibrary.push(new Book("The Long Walk", "Stephen King", 500, "no"));
+myLibrary.push(new Book("Meditations", "Marco Aurelio", 234, "no"));
+myLibrary.push(new Book("El Hombre Mediocre", "Jose Ingenieros", 115, "yes"));*/
+
+function displayBooks() {
+  const table = document.querySelector("#bookList");
+  table.innerHTML = "";
+  if (myLibrary.length === 0) {
+    alert("NO BOOKS ON LIBRARY");
+  } else {
+    myLibrary.forEach((book, index) => {
+      table.innerHTML += `
+    <tr id="trData">
+      <th>${book.title}</th>
+      <th>${book.author}</th>
+      <th>${book.pages}</th>
+      <th>${book.readed}</th>
+      <th><button id="remove-book-btn">Remove</button></th>
+    </tr>
+    `;
+    });
+  }
+  initializerRemoveBtns();
+}
+
+function addBookToLibrary() {
+  body.appendChild(dialog);
+  dialog.innerHTML = `
+    <h2>New Book</h2>
+    <form method = "dialog">
+    <div>
+      <label for="title">title: </label>
+      <input id="titleInput" type="text">
+    </div>
+    <div>
+      <label for="author">author: </label>
+      <input id="authorInput" type="text"></div>
+    </div>
+    <div>
+      <label for="pages">pages: </label>
+      <input id="pagesInput"  type="text"></div>
+    </div>
+    <div>
+      <label for="readed">readed: </label>
+      <input id="readedInput" type="text">
+    </div>
+    </form>
+    <div>
+      <button class="btnAdd" id="addToArrayBtn">Add</button>
+    </div>
+    <div>
+      <button class="btnCancelar" id="closeDialogBtn">Cancelar</button>
+    </div>
+  `;
+  const addToArrayBtn = document.querySelector("#addToArrayBtn");
+  const form = document.querySelector("form");
+  addToArrayBtn.addEventListener("click", addToArray(form));
+  cleanForm(form);
+  const closeDialogBtn = document.querySelector("#closeDialogBtn");
+  closeDialog(dialog, closeDialogBtn);
   dialog.showModal();
-  console.log("Added");
 }
 
-function removeBookLibrary(removeBook) {
-  let index = myLibrary.indexOf(removeBook);
-  if (index != -1) myLibrary.splice(index, 1);
+function addToArray(form) {
+  addToArrayBtn.addEventListener("click", () => {
+    const title = document.querySelector("#titleInput");
+    const author = document.querySelector("#authorInput");
+    const pages = document.querySelector("#pagesInput");
+    const readed = document.querySelector("#readedInput");
+    myLibrary.push(
+      new Book(title.value, author.value, pages.value, readed.value)
+    );
+    cleanForm(form);
+    displayBooks();
+  });
 }
 
-function changeReaded(changeBook, newStatus) {
-  changeBook.readed = newStatus;
+function closeDialog(dialog, closeDialogBtn) {
+  closeDialogBtn.addEventListener("click", () => {
+    dialog.close();
+  });
 }
 
-function add(title, author, pages, readed) {
-  myLibrary.push(new Book(title, author, pages, readed));
+function cleanForm(form) {
+  form.reset();
 }
 
-function addNewRow() {
-  const table = document.querySelector(".table");
-  const rowBook = document.createElement("tr");
-  let th1 = document.createElement("th");
-  let th2 = document.createElement("th");
-  let th3 = document.createElement("th");
-  let th4 = document.createElement("th");
-  th1.textContent = newBook.title;
-  th2.textContent = newBook.author;
-  th3.textContent = newBook.pages;
-  th4.textContent = newBook.readed;
-  rowBook.appendChild(th1);
-  rowBook.appendChild(th2);
-  rowBook.appendChild(th3);
-  rowBook.appendChild(th4);
-  table.appendChild(rowBook);
+function removeBook(indexToRemove) {
+  myLibrary.splice(indexToRemove, 1);
+  displayBooks();
+  console.log(`Libro en el índice ${indexToRemove} eliminado.`);
 }
 
-console.log(myLibrary[0]);
+function initializerRemoveBtns() {
+  const removeButtons = document.querySelectorAll("#remove-book-btn");
+  removeButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const index = event.target.dataset.index;
+      removeBook(index);
+      trData.remove();
+    });
+  });
+}

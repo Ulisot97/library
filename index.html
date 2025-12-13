@@ -6,34 +6,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Library</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fleur+De+Leah&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <main>
-    <header>
-      <h1>Library</h1>
-    </header>
-    <div class="div-container">
-      <div class="div-container__h2">
-        <h2 class="div-container">Books</h2>
-      </div>
-      <table class="table">
-        <tr class="table__tr">
-          <th class="table__tr__th">Title</th>
-          <th class="table__tr__th">Author</th>
-          <th class="table__tr__th">Pages</th>
-          <th class="table__tr__th">Readed</th>
+  <h1>Library</h1>
+  <div class="tableContent">
+    <table id="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Pages</th>
+          <th>Readed</th>
+          <th></th>
         </tr>
-      </table>
-      <dialog id="myDialog">
-      </dialog>
-      <div class="newBookDiv">
-        <button onclick="addBookLibrary()">
-          <span>New Book</span>
-        </button>
-      </div>
-    </div>
-  </main>
+      </thead>
+      <tbody id="bookList">
+      </tbody>
+    </table>
+  </div>
+  <div class="containerBtns">
+    <button onclick="displayBooks()">Display</button>
+    <button onclick="addBookToLibrary()">New Book</button>
+  </div>
   <script src="app.js"></script>
 </body>
 

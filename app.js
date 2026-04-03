@@ -6,7 +6,7 @@ const trData = document.querySelector("trData");
 const pattern = "[0-9]";
 
 function Book(title, author, pages, readed) {
-  (this.id = crypto.getRandomValues),
+  (this.id = crypto.randomUUID()),
     (this.title = title),
     (this.author = author),
     (this.pages = pages),
@@ -21,7 +21,9 @@ Book.prototype.changeStatus = function () {
   }
 };
 
-Book.prototype.getId = function () {};
+Book.prototype.getId = function () {
+  return this.id;
+};
 
 /*myLibrary.push(new Book("The Hobbit", "R.R.Tolkien", 234, "yes"));
 myLibrary.push(new Book("The Lord of the Ring", "R.R.Tolkien", 600, "yes"));
@@ -32,22 +34,32 @@ myLibrary.push(new Book("El Hombre Mediocre", "Jose Ingenieros", 115, "yes"));*/
 function displayBooks() {
   const table = document.querySelector("#bookList");
   table.innerHTML = "";
+
   if (myLibrary.length === 0) {
-    alert("NO BOOKS ON LIBRARY");
-  } else {
-    myLibrary.forEach((book, index) => {
-      table.innerHTML += `
-    <tr id="trData">
-      <th>${book.title}</th>
-      <th>${book.author}</th>
-      <th>${book.pages}</th>
-      <th>${book.readed}</th>
-      <th><button class="changeStatusBtn" >Change Status</button></th>
-      <th><button class="removeBookBtn">Remove</button></th>
-    </tr>
+    // En vez de alert, muestro mensaje en la tabla
+    table.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 20px;">
+          No books in your library. Click "New Book" to add one.
+        </td>
+      </tr>
     `;
-    });
+    return;
   }
+
+  myLibrary.forEach((book, index) => {
+    table.innerHTML += `
+      <tr>
+        <td>${book.title}</td>
+        <td>${book.author}</td>
+        <td>${book.pages}</td>
+        <td>${book.readed}</td>
+        <td><button class="changeStatusBtn" data-index="${index}">Change Status</button></td>
+        <td><button class="removeBookBtn" data-index="${index}">Remove</button></td>
+      </tr>
+    `;
+  });
+
   initializerChangeStatusBtns();
   initializerRemoveBtns();
 }
@@ -56,79 +68,61 @@ function addBookToLibrary() {
   body.appendChild(dialog);
   dialog.innerHTML = `
     <h2>New Book</h2>
-    <form method = "dialog">
-    <div>
-      <label for="title">title: </label>
-      <input id="titleInput" type="text">
-    </div>
-    <div>
-      <label for="author">author: </label>
-      <input id="authorInput" type="text">
-    </div>
-    <div>
-      <label for="pages">pages: </label>
-      <input id="pagesInput"
-        type="number"
-        min="1"
-        step="1"
-        max="15000"
-      />
-    </div>
-    <div>
-      <label for="readed">readed: </label>
-      <input type="radio" id="readedInputYes"  name="readStatus" value="yes" />
-      <label for="yes">Yes</label>
-      <input type="radio" id="readedInputNo" name="readStatus" value="no" />
-      <label for="no">No</label>
-    </div>
+    <form id="bookForm" method="dialog">
+      <div>
+        <label for="title">title: </label>
+        <input id="titleInput" type="text" required>
+      </div>
+      <div>
+        <label for="author">author: </label>
+        <input id="authorInput" type="text" required>
+      </div>
+      <div>
+        <label for="pages">pages: </label>
+        <input id="pagesInput" type="number" min="1" max="15000" required>
+      </div>
+      <div>
+        <label for="readed">readed: </label>
+        <input type="radio" id="readedInputYes" name="readStatus" value="yes" required>
+        <label for="yes">Yes</label>
+        <input type="radio" id="readedInputNo" name="readStatus" value="no">
+        <label for="no">No</label>
+      </div>
+      <div>
+        <button type="submit" class="btnAdd">Add</button>
+        <button type="button" id="closeDialogBtn" class="btnCancelar">Cancelar</button>
+      </div>
     </form>
-    <div>
-      <button class="btnAdd" id="addToArrayBtn">Add</button>
-    </div>
-    <div>
-      <button class="btnCancelar" id="closeDialogBtn">Cancelar</button>
-    </div>
   `;
-  const addToArrayBtn = document.querySelector("#addToArrayBtn");
-  const form = document.querySelector("form");
-  addToArrayBtn.addEventListener("click", () => {
-    let newID = addToArray(form);
-    showIDConsole(newID);
-  });
-  cleanForm(form);
+
+  const form = document.querySelector("#bookForm");
   const closeDialogBtn = document.querySelector("#closeDialogBtn");
-  closeDialog(dialog, closeDialogBtn);
-  dialog.showModal();
-}
 
-function addToArray(form) {
-  addToArrayBtn.addEventListener("click", () => {
-    const title = document.querySelector("#titleInput");
-    const author = document.querySelector("#authorInput");
-    const pages = document.querySelector("#pagesInput");
-    const readed = document.querySelector('input[name="readStatus"]:checked');
-    let readStatusValue = null;
-    if (readed) {
-      readStatusValue = readed.value;
-    }
-    let newBook = new Book(
-      title.value,
-      author.value,
-      pages.value,
-      readStatusValue
-    );
-    myLibrary.push(newBook);
-    cleanForm(form);
-    displayBooks();
-    showBooksConsole();
-    return newBook.id;
-  });
-}
-
-function closeDialog(dialog, closeDialogBtn) {
+  // Listener para el botón Cancelar
   closeDialogBtn.addEventListener("click", () => {
     dialog.close();
   });
+
+  // Listener para el submit del form (el fix del Bug 1)
+  // Usamos 'submit' en vez de 'click' en el botón Add
+  // Y el form tiene method="dialog", así que se cierra solo
+  form.addEventListener("submit", (event) => {
+    event.preventDefault(); // Prevenimos refresh de página
+
+    const title = document.querySelector("#titleInput").value;
+    const author = document.querySelector("#authorInput").value;
+    const pages = document.querySelector("#pagesInput").value;
+    const readed = document.querySelector('input[name="readStatus"]:checked');
+    const readStatusValue = readed ? readed.value : "no";
+
+    const newBook = new Book(title, author, pages, readStatusValue);
+    myLibrary.push(newBook);
+
+    console.log("Book added with ID:", newBook.id);
+    displayBooks();
+  });
+
+  dialog.showModal();
 }
 
 function cleanForm(form) {
@@ -144,8 +138,7 @@ function initializerRemoveBtns() {
   const removeButtons = document.querySelectorAll(".removeBookBtn");
   removeButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-      const index = event.target.dataset.index;
-      console.log(index);
+      const index = parseInt(event.target.dataset.index);
       removeBook(index);
     });
   });
@@ -153,22 +146,16 @@ function initializerRemoveBtns() {
 
 function initializerChangeStatusBtns() {
   const buttons = document.querySelectorAll(".changeStatusBtn");
-  buttons.forEach((buttons) => {
-    buttons.addEventListener("click", (event) => {
-      const index = event.target.dataset.index;
-      let numIndex = parseInt(index);
-      console.log(index + " " + numIndex);
-      myLibrary[numIndex].changeStatus();
+  buttons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const index = parseInt(event.target.dataset.index);
+      myLibrary[index].changeStatus();
+      displayBooks(); // ← Sin esto, el cambio NO se ve en la UI!
     });
   });
 }
 
-function showIDConsole() {
-  console.log(myLibrary.indexOf(id));
-}
 
 function search(id) {
-  myLibrary.forEach((book) => {
-    if (book.id === id) return true;
-  });
+  return myLibrary.find(book => book.id === id) ?? null;
 }

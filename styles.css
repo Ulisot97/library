@@ -1,3 +1,31 @@
+:root {
+  --color-primary: #333;
+  --color-bg: #fff;
+  --color-border: #000;
+  --color-button-bg: #fff;
+  --color-button-hover: #f0f0f0;
+  --color-dialog-bg: #fff;
+
+  --font-display: "Fleur De Leah", cursive;
+  --font-body: system-ui, sans-serif;
+  --font-table: monospace, "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+
+  --size-h1: 4em;
+  --size-th: 2em;
+  --size-btn: 1.1em;
+  --size-dialog-form: 1.1em;
+  --size-dialog-btn: 25px;
+
+  --spacing-sm: 5px;
+  --spacing-md: 10px;
+  --spacing-lg: 20px;
+  --spacing-xl: 30px;
+
+  --radius-button: 10%;
+  --dialog-width: 300px;
+  --dialog-height: 360px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,13 +33,13 @@
 
 h1 {
   display: block;
-  font-family: "Fleur De Leah", cursive;
-  font-size: 4em;
+  font-family: var(--font-display);
+  font-size: var(--size-h1);
   text-align: center;
 }
 
 thead {
-  font-family: monospace, "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-family: var(--font-table);
 }
 
 .tableContent {
@@ -21,8 +49,8 @@ thead {
 
 th {
   text-align: center;
-  font-size: 2em;
-  padding-inline: 10px;
+  font-size: var(--size-th);
+  padding-inline: var(--spacing-md);
 }
 
 .containerBtns {
@@ -31,51 +59,51 @@ th {
 }
 
 .containerBtns > button {
-  font-size: 1.1em;
-  padding: 5px;
-  border-radius: 10%;
-  border-color: #000;
-  margin-top: 20px;
-  margin-inline: 10px;
+  font-size: var(--size-btn);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-button);
+  border-color: var(--color-border);
+  margin-top: var(--spacing-lg);
+  margin-inline: var(--spacing-md);
 }
 
 .dialog {
   justify-self: center;
   align-self: center;
-  height: 360px;
-  width: 300px;
+  height: var(--dialog-height);
+  width: var(--dialog-width);
 }
 
 .dialog > h2 {
   text-align: center;
-  margin-top: 3px;
+  margin-top: var(--spacing-sm);
 }
 
 .dialog > form {
-  font-size: 1.1em;
-  margin-block: 30px;
+  font-size: var(--size-dialog-form);
+  margin-block: var(--spacing-xl);
 }
 
 .dialog > form > div {
   font-size: 1em;
-  margin-block: 15px;
-  margin-left: 30px;
+  margin-block: var(--spacing-lg);
+  margin-left: var(--spacing-xl);
 }
 
 .dialog > form > div > input {
   font-size: 0.7em;
-  padding: 5px;
+  padding: var(--spacing-sm);
 }
 
 .btnAdd {
-  font-size: 25px;
-  margin-bottom: 20px;
+  font-size: var(--size-dialog-btn);
+  margin-bottom: var(--spacing-lg);
   margin-left: 35%;
-  padding: 5px;
+  padding: var(--spacing-sm);
 }
 
 .btnCancelar {
-  padding: 5px;
-  font-size: 25px;
+  padding: var(--spacing-sm);
+  font-size: var(--size-dialog-btn);
   margin-left: 27%;
 }

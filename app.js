@@ -2,41 +2,24 @@ const myLibrary = [];
 const dialog = document.createElement("dialog");
 dialog.setAttribute("class", "dialog");
 const body = document.querySelector("body");
-const trData = document.querySelector("trData");
-const pattern = "[0-9]";
 
 function Book(title, author, pages, readed) {
-  (this.id = crypto.randomUUID()),
-    (this.title = title),
-    (this.author = author),
-    (this.pages = pages),
-    (this.readed = readed);
+  this.id = crypto.randomUUID();
+  this.title = title;
+  this.author = author;
+  this.pages = pages;
+  this.readed = readed;
 }
 
 Book.prototype.changeStatus = function () {
-  if (this.readed === "yes") {
-    this.readed = "no";
-  } else {
-    this.readed = "yes";
-  }
+  this.readed = this.readed === "yes" ? "no" : "yes";
 };
-
-Book.prototype.getId = function () {
-  return this.id;
-};
-
-/*myLibrary.push(new Book("The Hobbit", "R.R.Tolkien", 234, "yes"));
-myLibrary.push(new Book("The Lord of the Ring", "R.R.Tolkien", 600, "yes"));
-myLibrary.push(new Book("The Long Walk", "Stephen King", 500, "no"));
-myLibrary.push(new Book("Meditations", "Marco Aurelio", 234, "no"));
-myLibrary.push(new Book("El Hombre Mediocre", "Jose Ingenieros", 115, "yes"));*/
 
 function displayBooks() {
   const table = document.querySelector("#bookList");
   table.innerHTML = "";
 
   if (myLibrary.length === 0) {
-    // En vez de alert, muestro mensaje en la tabla
     table.innerHTML = `
       <tr>
         <td colspan="5" style="text-align: center; padding: 20px;">
@@ -90,7 +73,7 @@ function addBookToLibrary() {
       </div>
       <div>
         <button type="submit" class="btnAdd">Add</button>
-        <button type="button" id="closeDialogBtn" class="btnCancelar">Cancelar</button>
+        <button type="button" id="closeDialogBtn" class="btnCancelar">Cancel</button>
       </div>
     </form>
   `;
@@ -98,16 +81,12 @@ function addBookToLibrary() {
   const form = document.querySelector("#bookForm");
   const closeDialogBtn = document.querySelector("#closeDialogBtn");
 
-  // Listener para el botón Cancelar
   closeDialogBtn.addEventListener("click", () => {
     dialog.close();
   });
 
-  // Listener para el submit del form (el fix del Bug 1)
-  // Usamos 'submit' en vez de 'click' en el botón Add
-  // Y el form tiene method="dialog", así que se cierra solo
   form.addEventListener("submit", (event) => {
-    event.preventDefault(); // Prevenimos refresh de página
+    event.preventDefault();
 
     const title = document.querySelector("#titleInput").value;
     const author = document.querySelector("#authorInput").value;
@@ -115,18 +94,11 @@ function addBookToLibrary() {
     const readed = document.querySelector('input[name="readStatus"]:checked');
     const readStatusValue = readed ? readed.value : "no";
 
-    const newBook = new Book(title, author, pages, readStatusValue);
-    myLibrary.push(newBook);
-
-    console.log("Book added with ID:", newBook.id);
+    myLibrary.push(new Book(title, author, pages, readStatusValue));
     displayBooks();
   });
 
   dialog.showModal();
-}
-
-function cleanForm(form) {
-  form.reset();
 }
 
 function removeBook(indexToRemove) {
@@ -135,27 +107,18 @@ function removeBook(indexToRemove) {
 }
 
 function initializerRemoveBtns() {
-  const removeButtons = document.querySelectorAll(".removeBookBtn");
-  removeButtons.forEach((button) => {
+  document.querySelectorAll(".removeBookBtn").forEach((button) => {
     button.addEventListener("click", (event) => {
-      const index = parseInt(event.target.dataset.index);
-      removeBook(index);
+      removeBook(parseInt(event.target.dataset.index));
     });
   });
 }
 
 function initializerChangeStatusBtns() {
-  const buttons = document.querySelectorAll(".changeStatusBtn");
-  buttons.forEach((button) => {
+  document.querySelectorAll(".changeStatusBtn").forEach((button) => {
     button.addEventListener("click", (event) => {
-      const index = parseInt(event.target.dataset.index);
-      myLibrary[index].changeStatus();
-      displayBooks(); // ← Sin esto, el cambio NO se ve en la UI!
+      myLibrary[parseInt(event.target.dataset.index)].changeStatus();
+      displayBooks();
     });
   });
-}
-
-
-function search(id) {
-  return myLibrary.find(book => book.id === id) ?? null;
 }
